@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breathing Timer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;  /* Modern font stack */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #E3F2FD;
+        }
+
+        .container {
+            text-align: center;
+            padding: 30px;  /* Increased padding */
+            background-color: white;
+            border-radius: 20px;  /* More rounded corners */
+            box-shadow: 0 8px 32px rgba(33, 150, 243, 0.1);  /* Softer, larger shadow */
+            width: 500px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin: 0;
+            color: #1976D2;
+            font-weight: 600;  /* Slightly less bold */
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: #64B5F6;  /* Lighter blue */
+            margin: 8px 0 24px 0;
+            font-weight: 400;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #1976D2;
+            margin: 0 0 24px 0;
+            font-weight: 500;
+            white-space: nowrap;  /* Keep on one line */
+        }
+
+        .breathing-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: rgba(33, 150, 243, 0.2);  /* Sky blue background */
+            margin: 40px auto;
+            border: 2px solid #2196F3;  /* Sky blue border */
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform-origin: center;
+            transform: scale(1);
+            opacity: 0.8;
+            transition: all 1s ease-in-out;
+            display: none;
+        }
+
+        .content-wrapper {
+            position: relative;
+            background-color: transparent;
+        }
+
+        .timer {
+            font-size: 48px;
+            font-weight: bold;
+            color: #2196F3;  /* Sky blue text */
+            background: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .technique-select {
+            margin: 20px 0 40px 0;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .technique-button {
+            padding: 24px;  /* More padding */
+            margin: 0;
+            font-size: 16px;
+            border: 2px solid #2196F3;
+            border-radius: 16px;  /* More rounded corners */
+            cursor: pointer;
+            background-color: white;
+            color: #2196F3;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;  /* Smoother transition */
+            text-align: left;
+            width: 100%;
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.1);  /* Subtle button shadow */
+        }
+
+        .technique-button:hover {
+            background-color: rgba(33, 150, 243, 0.05);
+            border-color: #1976D2;
+            transform: translateY(-2px);  /* Slight lift effect */
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+        }
+
+        .technique-button h3 {
+            margin: 0 0 10px 0;
+            color: #1976D2;  /* Darker sky blue */
+        }
+
+        .technique-button p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        button {
+            padding: 12px 24px;
+            margin: 8px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #2196F3;  /* Sky blue */
+            color: white;
+            position: relative;
+            z-index: 2;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #1976D2;  /* Darker sky blue */
+        }
+
+        .timer-container {
+            display: none;
+            margin: 20px auto;  /* Add some margin for spacing */
+        }
+
+        .timer-container.visible {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;  /* Space between circle and buttons */
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;  /* Space between buttons */
+        }
+
+        .technique-select.hidden {
+            display: none;
+        }
+
+        h2.hidden {
+            display: none;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            display: none;  /* Hidden initially */
+        }
+
+        .back-button svg {
+            width: 24px;
+            height: 24px;
+            fill: #2196F3;  /* Sky blue */
+        }
+
+        .back-button:hover svg {
+            fill: #1976D2;  /* Darker sky blue */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-button" onclick="stopTimer()" id="backButton">
+            <svg viewBox="0 0 24 24">
+                <path d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z"/>
+            </svg>
+        </button>
+        <div class="content-wrapper">
+            <h1>Breathing Timer</h1>
+            <div class="subtitle">Helping you to Sleep Better</div>
+            <h2>What Type of Breathing Would You Like to Do?</h2>
+            
+            <div class="technique-select">
+                <button class="technique-button" onclick="selectTechnique('4-7-8')">
+                    <h3>Relaxation Response (4-7-8 Breathing)</h3>
+                    <p><strong>Best for:</strong> Falling asleep quickly</p>
+                    <p><strong>Why it works:</strong> Activates the parasympathetic nervous system (PNS), slows heart rate, and reduces cortisol.</p>
+                </button>
+
+                <button class="technique-button" onclick="selectTechnique('5-5')">
+                    <h3>Coherent Breathing (5-5 Breathing)</h3>
+                    <p><strong>Best for:</strong> Improving overall sleep quality</p>
+                    <p><strong>Why it works:</strong> Synchronizes breathing with heart rate variability (HRV) to enhance relaxation.</p>
+                </button>
+            </div>
+
+            <div class="timer-container">
+                <div class="breathing-circle" id="breathingCircle">
+                    <div class="timer" id="timer">0</div>
+                </div>
+                
+                <div class="button-container">
+                    <button id="startButton" onclick="startTimer()" disabled>Start</button>
+                    <button onclick="stopTimer()">Stop</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
