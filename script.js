@@ -28,11 +28,20 @@ function selectTechnique(technique) {
     // Hide selection UI
     document.querySelector('.technique-select').classList.add('hidden');
     document.querySelector('h2').classList.add('hidden');
+    document.querySelector('.content-wrapper').classList.add('timer-view');
     
     // Show timer UI and back button
     document.getElementById('breathingCircle').style.display = 'flex';
     document.querySelector('.timer-container').classList.add('visible');
     document.getElementById('backButton').style.display = 'block';
+    
+    // Set the technique title with pattern on new line
+    const mainTitle = technique === '4-7-8' ? 'Relaxation Response' : 'Coherent Breathing';
+    const pattern = technique === '4-7-8' ? '(4-7-8 Breathing)' : '(5-5 Breathing)';
+    document.getElementById('selectedTechnique').innerHTML = `
+        ${mainTitle}<br>
+        <span class="breathing-pattern">${pattern}</span>
+    `;
     
     document.getElementById('startButton').disabled = false;
 }
@@ -43,6 +52,7 @@ function startTimer() {
     isRunning = true;
     currentPhase = 0;
     currentCycle = 0;
+    document.getElementById('instructionText').style.display = 'block';  // Show instructions
     runPhase();
 }
 
@@ -53,11 +63,15 @@ function stopTimer() {
     // Reset and show selection UI
     document.querySelector('.technique-select').classList.remove('hidden');
     document.querySelector('h2').classList.remove('hidden');
+    document.querySelector('.content-wrapper').classList.remove('timer-view');
     
     // Hide timer UI and back button
     document.getElementById('breathingCircle').style.display = 'none';
     document.querySelector('.timer-container').classList.remove('visible');
     document.getElementById('backButton').style.display = 'none';
+    
+    // Reset instruction visibility
+    document.getElementById('instructionText').style.display = 'none';
     
     document.getElementById('timer').textContent = '0';
     
@@ -69,6 +83,16 @@ function stopTimer() {
 
 function updateBreathingCircle(phase) {
     const circle = document.getElementById('breathingCircle');
+    const instructionText = document.getElementById('instructionText');
+    
+    // Update instruction text with emojis
+    if (phase.instruction.toLowerCase().includes('inhale')) {
+        instructionText.innerHTML = '👃 Breathe In';
+    } else if (phase.instruction.toLowerCase().includes('exhale')) {
+        instructionText.innerHTML = '👄 Breathe Out';
+    } else if (phase.instruction.toLowerCase().includes('hold')) {
+        instructionText.innerHTML = '✨ Hold';
+    }
     
     if (phase.instruction.toLowerCase().includes('inhale')) {
         circle.style.transitionDuration = `${phase.duration}s`;
@@ -93,6 +117,7 @@ function runPhase() {
     let timeLeft = phase.duration;
 
     updateBreathingCircle(phase);
+    countdown();
 
     function countdown() {
         if (!isRunning) return;
@@ -116,6 +141,4 @@ function runPhase() {
             runPhase();
         }
     }
-
-    countdown();
 } 

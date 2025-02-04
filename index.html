@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Breathing Timer</title>
+    <title>Sleep Timer For Better Sleep</title>
     <style>
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;  /* Modern font stack */
@@ -30,14 +30,16 @@
             font-size: 32px;
             margin: 0;
             color: #1976D2;
-            font-weight: 600;  /* Slightly less bold */
+            font-weight: 600;
+            display: inline-block;  /* Make h1 inline */
         }
 
         .subtitle {
-            font-size: 18px;
-            color: #64B5F6;  /* Lighter blue */
-            margin: 8px 0 24px 0;
-            font-weight: 400;
+            font-size: 32px;        /* Match h1 size */
+            color: #1976D2;         /* Match h1 color */
+            margin: 0 0 24px 0;     /* Adjust margin */
+            font-weight: 600;       /* Match h1 weight */
+            display: inline-block;  /* Make subtitle inline */
         }
 
         h2 {
@@ -156,7 +158,9 @@
 
         .button-container {
             display: flex;
-            gap: 10px;  /* Space between buttons */
+            flex-direction: column;  /* Stack items vertically */
+            align-items: center;     /* Center items horizontally */
+            gap: 15px;              /* Space between instruction and button */
         }
 
         .technique-select.hidden {
@@ -187,6 +191,44 @@
         .back-button:hover svg {
             fill: #1976D2;  /* Darker sky blue */
         }
+
+        .selected-technique {
+            font-size: 24px;
+            color: #1976D2;
+            margin: 0 0 20px 0;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .breathing-pattern {
+            display: block;
+            font-size: 20px;  /* Slightly smaller than the main title */
+            margin-top: 8px;
+            color: #1976D2;
+            opacity: 0.9;
+        }
+
+        .content-wrapper h1,
+        .content-wrapper .subtitle {
+            transition: opacity 0.3s ease;
+        }
+
+        .content-wrapper.timer-view h1,
+        .content-wrapper.timer-view .subtitle {
+            display: none;
+        }
+
+        .instruction-text {
+            font-size: 28px;          /* Increased from 20px */
+            color: #2196F3;
+            font-weight: 600;         /* Increased from 500 */
+            min-height: 36px;         /* Increased to match new font size */
+            margin-bottom: 10px;      /* Adjusted spacing */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;               /* Space between emoji and text */
+        }
     </style>
 </head>
 <body>
@@ -197,9 +239,11 @@
             </svg>
         </button>
         <div class="content-wrapper">
-            <h1>Breathing Timer</h1>
-            <div class="subtitle">Helping you to Sleep Better</div>
-            <h2>What Type of Breathing Would You Like to Do?</h2>
+            <div style="margin-bottom: 24px">
+                <h1>Sleep Timer </h1>
+                <div class="subtitle">For Better Sleep</div>
+            </div>
+            <h2>Select Type of Breathing:</h2>
             
             <div class="technique-select">
                 <button class="technique-button" onclick="selectTechnique('4-7-8')">
@@ -216,13 +260,14 @@
             </div>
 
             <div class="timer-container">
+                <h3 class="selected-technique" id="selectedTechnique"></h3>
                 <div class="breathing-circle" id="breathingCircle">
                     <div class="timer" id="timer">0</div>
                 </div>
                 
                 <div class="button-container">
+                    <div id="instructionText" class="instruction-text"></div>
                     <button id="startButton" onclick="startTimer()" disabled>Start</button>
-                    <button onclick="stopTimer()">Stop</button>
                 </div>
             </div>
         </div>
